@@ -1,0 +1,16 @@
+RewriteEngine On
+
+# 1. Redirect any requests with .php in URL to extensionless URL (canonical redirect)
+RewriteCond %{THE_REQUEST} \s/([^.]+)\.php[^\s]* [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# 2. Internally rewrite extensionless URLs to .php files if they exist
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# 3. Handle /news/slug URLs internally with news-single.php?slug=slug
+RewriteRule ^news/([a-zA-Z0-9-]+)$ /news-single.php?slug=$1 [L,QSA]
+
+# 4. Optional: If you want /news/ to load news.php normally
+RewriteRule ^news/?$ /news.php [L,QSA]
